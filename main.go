@@ -20,8 +20,12 @@ func main() {
 
 	//后台管理
 	http.HandleFunc("/toManager",controller.ManagerPageHandler)
-	http.HandleFunc("/toAddBook",controller.BookAddPageHandler)
+
+	//书籍管理
 	http.HandleFunc("/getBooks",controller.BooksManagerPageHandler)
+	http.HandleFunc("/toAddBook",controller.BookAddPageHandler)
+	http.HandleFunc("/toUpdateBookPage",controller.BookUpdatePageHandler)
+
 
 
 	//处理请求
@@ -32,6 +36,7 @@ func main() {
 
 	//图书相关请求
 	http.HandleFunc("/addBook",controller.DoAddBook)
+	http.HandleFunc("/updateBook",controller.DoUpdateBook)
 	http.HandleFunc("/deleteBook",controller.DoDeleteBook)
 
 

@@ -31,7 +31,7 @@
 		</div>
 		
 		<div id="main">
-			<form action="/updateOraddBook" method="POST">
+			<form action="/updateBook" method="POST">
 				<table>
 					<tr>
 						<td>名称</td>
@@ -39,34 +39,26 @@
 						<td>作者</td>
 						<td>销量</td>
 						<td>库存</td>
+						<td>图片路径</td>
 						<td colspan="2">操作</td>
 					</tr>		
 					<tr>
-					{{if .}}	
 						<input type="hidden" name="bookId" value="{{.ID}}" />
 						<td><input name="title" type="text" value="{{.Title}}"/></td>
 						<td><input name="price" type="text" value="{{.Price}}"/></td>
 						<td><input name="author" type="text" value="{{.Author}}"/></td>
 						<td><input name="sales" type="text" value="{{.Sales}}"/></td>
 						<td><input name="stock" type="text" value="{{.Stock}}"/></td>
-					{{else}}
-						<td><input name="title" type="text" /></td>
-						<td><input name="price" type="text" /></td>
-						<td><input name="author" type="text" /></td>
-						<td><input name="sales" type="text" /></td>
-						<td><input name="stock" type="text" /></td>
-					{{end}}	
+						<td><input name="img_path" type="text"  value="{{.ImgPath}}"/></td>
 						<td><input type="submit" value="提交"/></td>
-					</tr>		
+					</tr>
 				</table>
 			</form>
-			
-	
 		</div>
-		
+
 		<div id="bottom">
 			<span>
-				尚硅谷书城.Copyright &copy;2015
+				golang书城
 			</span>
 		</div>
 </body>

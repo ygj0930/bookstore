@@ -71,3 +71,53 @@ func DoDeleteBook(w http.ResponseWriter,r *http.Request){
 	//内部跳转回图书管理页面
 	BooksManagerPageHandler(w,r)
 }
+
+//跳转修改图书页面
+func BookUpdatePageHandler(w http.ResponseWriter,r *http.Request){
+	//获取参数
+	idStr := r.FormValue("bookId")
+	bookId,_ := strconv.Atoi(idStr)
+
+	//查询书籍信息
+	book,err := dao.GetBookByID(bookId)
+	if err!=nil {
+		fmt.Println("GetBookByID error:",err)
+	}
+
+	//渲染模板
+	t := template.Must(template.ParseFiles("views/pages/manager/book_edit.html"))
+	t.Execute(w,book)
+}
+//修改图书
+func DoUpdateBook(w http.ResponseWriter,r *http.Request){
+	//获取参数
+	idStr := r.PostFormValue("bookId")
+	title := r.PostFormValue("title")
+	price := r.PostFormValue("price")
+	author := r.PostFormValue("author")
+	sales := r.PostFormValue("sales")
+	stock := r.PostFormValue("stock")
+	img_path := r.PostFormValue("img_path")
+
+	//类型转换
+	iId,_ := strconv.Atoi(idStr)
+	fPrice,_ := strconv.ParseFloat(price,2)
+	iSales,_ := strconv.Atoi(sales)
+	iStock,_ := strconv.Atoi(stock)
+	//进行插入
+	errIns := dao.UpdateBook(&model.Book{
+		ID:   iId,
+		Title:   title,
+		Author:  author,
+		Price:   fPrice,
+		Sales:   iSales,
+		Stock:   iStock,
+		ImgPath: img_path,
+	})
+	if errIns != nil {
+		fmt.Println("DoUpdateBook error:",errIns)
+	}
+
+	//内部跳转到图书管理页面
+	BooksManagerPageHandler(w,r)
+}
