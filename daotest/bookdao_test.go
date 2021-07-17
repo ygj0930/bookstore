@@ -30,3 +30,11 @@ func TestAddBook(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestDeleteBook(t *testing.T){
+	bookId := 45
+	err := dao.DeleteBook(bookId)
+	if err!=nil {
+		t.Error(err)
+	}
+}

@@ -55,3 +55,19 @@ func DoAddBook(w http.ResponseWriter,r *http.Request){
 	//内部跳转到图书管理页面
 	BooksManagerPageHandler(w,r)
 }
+
+//删除图书
+func DoDeleteBook(w http.ResponseWriter,r *http.Request){
+	//获取参数
+	idStr := r.FormValue("bookId")
+	bookId,_ := strconv.Atoi(idStr)
+
+	//进行删除
+	err := dao.DeleteBook(bookId)
+	if err!=nil {
+		fmt.Println("DoDeleteBook error:",err)
+	}
+
+	//内部跳转回图书管理页面
+	BooksManagerPageHandler(w,r)
+}

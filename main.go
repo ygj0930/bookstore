@@ -32,6 +32,7 @@ func main() {
 
 	//图书相关请求
 	http.HandleFunc("/addBook",controller.DoAddBook)
+	http.HandleFunc("/deleteBook",controller.DoDeleteBook)
 
 
 	//服务器启动
