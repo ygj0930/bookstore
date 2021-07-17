@@ -20,13 +20,18 @@ func main() {
 
 	//后台管理
 	http.HandleFunc("/toManager",controller.ManagerPageHandler)
+	http.HandleFunc("/toAddBook",controller.BookAddPageHandler)
 	http.HandleFunc("/getBooks",controller.BooksManagerPageHandler)
 
 
 	//处理请求
+	//登录注册相关请求
 	http.HandleFunc("/login",controller.DoLogin)
 	http.HandleFunc("/register",controller.DoRegister)
 	http.HandleFunc("/findUserByName",controller.DoFindUserByName)
+
+	//图书相关请求
+	http.HandleFunc("/addBook",controller.DoAddBook)
 
 
 	//服务器启动

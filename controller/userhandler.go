@@ -46,7 +46,7 @@ func DoRegister(w http.ResponseWriter,r *http.Request){
 		//插入用户
 		errIns := dao.AddUser(username,password,email)
 		if errIns != nil {
-			fmt.Println("DoRegister error:",err)
+			fmt.Println("DoRegister error:",errIns)
 		}
 		t := template.Must(template.ParseFiles("views/pages/user/regist_success.html"))
 		t.Execute(w,"")

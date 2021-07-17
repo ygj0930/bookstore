@@ -7,7 +7,7 @@ import (
 
 //获取所有图书
 func GetBooks()([]*model.Book,error) {
-	sqlStr := "select id , title,author ,price ,sales ,stock ,img_path  from books"
+	sqlStr := "select * from books"
 
 	rows,err := utils.Db.Query(sqlStr)
 	if err != nil {
@@ -23,4 +23,15 @@ func GetBooks()([]*model.Book,error) {
 		books = append(books,book)
 	}
 	return books,nil
+}
+
+//新增书籍
+func AddBook(b *model.Book) error {
+	sqlStr := "insert into books(title,author,price,sales,stock,img_path) values(?,?,?,?,?,?)"
+
+	_,errIns := utils.Db.Exec(sqlStr,b.Title,b.Author,b.Price,b.Sales,b.Stock,b.ImgPath)
+	if errIns != nil {
+		return errIns
+	}
+	return nil
 }
