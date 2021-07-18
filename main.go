@@ -12,6 +12,7 @@ func main() {
 
 	//页面请求
 	//首页
+	http.HandleFunc("/",controller.IndexHandler)
 	http.HandleFunc("/main",controller.IndexHandler)
 
 	//用户登录注册

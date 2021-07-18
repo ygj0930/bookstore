@@ -34,7 +34,7 @@ func PageBooksManagerPageHandler(w http.ResponseWriter,r *http.Request){
 	t := template.Must(template.ParseFiles("views/pages/manager/book_manager.html"))
 
 	//易错点：由于需要在template中调用方法，因此要传递指针类型
-	t.Execute(w,&page)
+	t.Execute(w,page)
 }
 
 

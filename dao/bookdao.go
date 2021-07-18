@@ -26,7 +26,7 @@ func GetBooks()([]*model.Book,error) {
 	return books,nil
 }
 //分页查询图书
-func GetPageBooks(pageNo int64) (model.Page,error) {
+func GetPageBooks(pageNo int64) (*model.Page,error) {
 	//查询总记录数
 	countSql := "select count(*) from books"
 	var recordTotal int64
@@ -65,7 +65,7 @@ func GetPageBooks(pageNo int64) (model.Page,error) {
 		PageTotal:   pageTotal,
 		RecordTotal: recordTotal,
 	}
-	return pageInfo,nil
+	return &pageInfo,nil
 }
 
 //查询某本图书
