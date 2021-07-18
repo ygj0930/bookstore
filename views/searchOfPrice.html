@@ -29,31 +29,31 @@
 <div id="header">
     <img class="logo_img" alt="" src="/static/img/logo.gif" >
     <span class="wel_word">网上书城</span>
-    {{if .IsLogin}}
-        <div>
-            <span>欢迎<span class="um_span">{{.Username}}</span>光临尚硅谷书城</span>
-            <a href="/getCartInfo">购物车</a>
-            <a href="/getMyOrder">我的订单</a>
-            <a href="/logout">注销</a>
-            <a href="/main">返回主页</a>
-            <a href="/pages/manager/manager.html">后台管理</a>
-        </div>
-    {{else}}
-        <div>
-            <a href="/toLogin">登录</a> |
-            <a href="/pages/user/regist.html">注册</a> &nbsp;&nbsp;
-            <a href="/pages/manager/manager.html">后台管理</a>
-        </div>
-    {{end}}
+{{/*    {{if .IsLogin}}*/}}
+{{/*        <div>*/}}
+{{/*            <span>欢迎<span class="um_span">{{.Username}}</span>光临尚硅谷书城</span>*/}}
+{{/*            <a href="/getCartInfo">购物车</a>*/}}
+{{/*            <a href="/getMyOrder">我的订单</a>*/}}
+{{/*            <a href="/logout">注销</a>*/}}
+{{/*            <a href="/main">返回主页</a>*/}}
+{{/*            <a href="/pages/manager/manager.html">后台管理</a>*/}}
+{{/*        </div>*/}}
+{{/*    {{else}}*/}}
+{{/*        <div>*/}}
+{{/*            <a href="/toLogin">登录</a> |*/}}
+{{/*            <a href="/pages/user/regist.html">注册</a> &nbsp;&nbsp;*/}}
+{{/*            <a href="/pages/manager/manager.html">后台管理</a>*/}}
+{{/*        </div>*/}}
+{{/*    {{end}}*/}}
 </div>
 
 <div id="main">
-    <div id="book">
+    <div id="book" class="clearfix">
         <div class="book_cond">
-            <form action="/queryPrice" method="POST">
+            <form action="/getPageBooksByPrice" method="POST">
                 价格：
-                <input type="text" name="min" value="{{.MinPrice}}"> 元 -
-                     <input type="text" name="max" value="{{.MaxPrice}}"> 元
+                <input type="text" name="minPrice" value="{{.MinPrice}}"> 元 -
+                     <input type="text" name="maxPrice" value="{{.MaxPrice}}"> 元
                 <button>查询</button>
             </form>
         </div>
@@ -67,7 +67,7 @@
         {{range .Books}}
             <div class="b_list">
                 <div class="img_div">
-                    <img class="book_img" alt="" src="{{.ImagePath}}" />
+                    <img class="book_img" alt="" src="{{.ImgPath}}" />
                 </div>
                 <div class="book_info">
                     <div class="book_name">
@@ -101,15 +101,15 @@
 
     <div id="page_nav">
         {{if .IsHasPrev}}
-            <a href="/queryPrice?PageNo=1&min={{.MinPrice}}&max={{.MaxPrice}}">首页</a>
-            <a href="/queryPrice?PageNo={{.GetPrevPageNo}}&min={{.MinPrice}}&max={{.MaxPrice}}">上一页</a>
+            <a href="/getPageBooksByPrice?PageNo=1&minPrice={{.MinPrice}}&maxPrice={{.MaxPrice}}">首页</a>
+            <a href="/getPageBooksByPrice?PageNo={{.GetPrevPageNo}}&minPrice={{.MinPrice}}&maxPrice={{.MaxPrice}}">上一页</a>
         {{end}}
-        当前是第{{.IndexPage}}页，共<span id="totalPages">{{.Pages}} </span>页，共{{.Count}}条记录
+        当前是第{{.PageNo}}页，共<span id="totalPages">{{.PageTotal}} </span>页，共{{.RecordTotal}}条记录
         {{if .IsHasNext}}
-            <a href="/queryPrice?PageNo={{.GetNextPageNo}}&min={{.MinPrice}}&max={{.MaxPrice}}">下一页</a>
-            <a href="/queryPrice?PageNo={{.Pages}}&min={{.MinPrice}}&max={{.MaxPrice}}">末页</a>
+            <a href="/getPageBooksByPrice?PageNo={{.GetNextPageNo}}&minPrice={{.MinPrice}}&maxPrice={{.MaxPrice}}">下一页</a>
+            <a href="/getPageBooksByPrice?PageNo={{.PageTotal}}&minPrice={{.MinPrice}}&maxPrice={{.MaxPrice}}">末页</a>
         {{end}}
-        到第<input value="{{.IndexPage}}" name="pn" id="pn_input"/>页
+        到第<input name="pn" id="pn_input"/>页
         <input type="button" value="确定" id="sub">
         <script>
             //给确定按钮绑定单击事件
@@ -121,7 +121,7 @@
                     alert("输入页码有误！");
                     return false;
                 }else {
-                    location = "/queryPrice?PageNo=" + pageNo +"&min={{.MinPrice}}&max={{.MaxPrice}}"
+                    location = "/getPageBooksByPrice?PageNo=" + pageNo +"&minPrice={{.MinPrice}}&maxPrice={{.MaxPrice}}"
                 }
             });
         </script>

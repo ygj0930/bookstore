@@ -7,6 +7,8 @@ type Page struct {
 	PageSize int64//每页大小
 	PageTotal int64//总页数
 	RecordTotal int64//总记录数
+	MinPrice string
+	MaxPrice string
 }
 
 //跳转边界判断

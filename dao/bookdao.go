@@ -1,8 +1,8 @@
 package dao
 
 import (
-	"bookstore/utils"
 	"bookstore/model"
+	"bookstore/utils"
 	"fmt"
 )
 
@@ -64,6 +64,52 @@ func GetPageBooks(pageNo int64) (*model.Page,error) {
 		PageSize:    pageSize,
 		PageTotal:   pageTotal,
 		RecordTotal: recordTotal,
+	}
+	return &pageInfo,nil
+}
+
+
+//分页查询价格范围图书
+func GetPageBooksByPrice(pageNo int64,minPrice string,maxPrice string) (*model.Page,error) {
+	//查询总记录数
+	countSql := "select count(*) from books where price between ? and ?"
+	var recordTotal int64
+	countRow := utils.Db.QueryRow(countSql,minPrice,maxPrice)
+	countRow.Scan(&recordTotal)
+
+	//设置每页大小
+	var pageSize int64 = 10
+
+	//计算总页数
+	var pageTotal int64
+	if recordTotal % pageSize == 0 {
+		pageTotal = recordTotal / pageSize
+	}else{
+		pageTotal = recordTotal / pageSize + 1
+	}
+
+	//查询当前页记录
+	booksSql := "select * from books where price between ? and ? limit ?,?"
+	rows,_ := utils.Db.Query(booksSql,minPrice,maxPrice,(pageNo-1)*pageSize,pageSize)
+	var books []*model.Book
+	for rows.Next() {
+		book := &model.Book{}
+		errScan := rows.Scan(&book.ID,&book.Title,&book.Author,&book.Price,&book.Sales,&book.Stock,&book.ImgPath)
+		if errScan != nil {
+			continue
+		}
+		books = append(books,book)
+	}
+
+	//创建分页记录返回
+	pageInfo := model.Page{
+		Books:       books,
+		PageNo:      pageNo,
+		PageSize:    pageSize,
+		PageTotal:   pageTotal,
+		RecordTotal: recordTotal,
+		MinPrice: minPrice,
+		MaxPrice: maxPrice,
 	}
 	return &pageInfo,nil
 }

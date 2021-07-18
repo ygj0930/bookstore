@@ -29,6 +29,14 @@ func TestGetPageBooks(t *testing.T) {
 	}
 }
 
+func TestGetPageBooksByPrice(t *testing.T) {
+	res,err := dao.GetPageBooksByPrice(1,"10","40")
+	if err != nil {
+		t.Error(err)
+	}
+	t.Logf("GetPageBooksByPrice:%+v",res)
+}
+
 func TestAddBook(t *testing.T) {
 	book := model.Book{
 		Title: "测试添加",

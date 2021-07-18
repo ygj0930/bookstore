@@ -49,18 +49,18 @@
 	
 	<div id="main">
 		<div id="book" class="clearfix">
-{{/*			<div class="book_cond">*/}}
-{{/*				<form action="/queryPrice" method="post">*/}}
-{{/*				价格：<input type="text" name="min"> 元 - <input type="text" name="max"> 元*/}}
-{{/*				<button>查询</button>*/}}
-{{/*				</form>*/}}
-{{/*			</div>*/}}
-{{/*			<div style="text-align: center">*/}}
-{{/*				<div>*/}}
-{{/*					<br>*/}}
-{{/*					<span style="color: deepskyblue" id="bookMsg"></span></span>*/}}
-{{/*				</div>*/}}
-{{/*			</div>*/}}
+			<div class="book_cond">
+				<form action="/getPageBooksByPrice" method="post">
+				价格：<input type="text" name="minPrice"> 元 - <input type="text" name="maxPrice"> 元
+				<button>查询</button>
+				</form>
+			</div>
+			<div style="text-align: center">
+				<div>
+					<br>
+					<span style="color: deepskyblue" id="bookMsg"></span></span>
+				</div>
+			</div>
 
 			{{range .Books}}
 			<div class="b_list">
