@@ -16,6 +16,19 @@ func TestGetBooks(t *testing.T) {
 	}
 }
 
+func TestGetPageBooks(t *testing.T) {
+	res,err := dao.GetPageBooks(1)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log("TestGetPageBooks-pageNo:",res.PageNo)
+	t.Log("TestGetPageBooks-pageTotal:",res.PageTotal)
+	t.Log("TestGetPageBooks-recTotal:",res.RecordTotal)
+	for _,v := range res.Books {
+		t.Log("TestGetPageBooks-book:",v)
+	}
+}
+
 func TestAddBook(t *testing.T) {
 	book := model.Book{
 		Title: "测试添加",

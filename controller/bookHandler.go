@@ -11,13 +11,32 @@ import (
 
 //跳转图书管理页面
 func BooksManagerPageHandler(w http.ResponseWriter,r *http.Request){
+	//获取数据
+	Books,_ := dao.GetBooks()
+
+	//渲染模板
+	t := template.Must(template.ParseFiles("views/pages/manager/book_manager.html"))
+	t.Execute(w,Books)
+}
+
+//跳转图书管理页面：分页查询
+func PageBooksManagerPageHandler(w http.ResponseWriter,r *http.Request){
+	//获取请求参数
+	pageNoStr := r.FormValue("PageNo")
+	pageNo,errParse := strconv.ParseInt(pageNoStr,10,64)
+	if pageNoStr == "" || errParse != nil{
+		pageNo = 1
+	}
+	//获取数据
+	page,_ := dao.GetPageBooks(pageNo)
+
 	//渲染模板
 	t := template.Must(template.ParseFiles("views/pages/manager/book_manager.html"))
 
-	//获取数据
-	Books,_ := dao.GetBooks()
-	t.Execute(w,Books)
+	//易错点：由于需要在template中调用方法，因此要传递指针类型
+	t.Execute(w,&page)
 }
+
 
 //跳转添加图书页面
 func BookAddPageHandler(w http.ResponseWriter,r *http.Request){

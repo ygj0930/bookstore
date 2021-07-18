@@ -23,9 +23,9 @@ func main() {
 
 	//书籍管理
 	http.HandleFunc("/getBooks",controller.BooksManagerPageHandler)
+	http.HandleFunc("/getPageBooks",controller.PageBooksManagerPageHandler)
 	http.HandleFunc("/toAddBook",controller.BookAddPageHandler)
 	http.HandleFunc("/toUpdateBookPage",controller.BookUpdatePageHandler)
-
 
 
 	//处理请求

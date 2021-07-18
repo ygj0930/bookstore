@@ -25,6 +25,49 @@ func GetBooks()([]*model.Book,error) {
 	}
 	return books,nil
 }
+//分页查询图书
+func GetPageBooks(pageNo int64) (model.Page,error) {
+	//查询总记录数
+	countSql := "select count(*) from books"
+	var recordTotal int64
+	countRow := utils.Db.QueryRow(countSql)
+	countRow.Scan(&recordTotal)
+
+	//设置每页大小
+	var pageSize int64 = 10
+
+	//计算总页数
+	var pageTotal int64
+	if recordTotal % pageSize == 0 {
+		pageTotal = recordTotal / pageSize
+	}else{
+		pageTotal = recordTotal / pageSize + 1
+	}
+
+	//查询当前页记录
+	booksSql := "select * from books limit ?,?"
+	rows,_ := utils.Db.Query(booksSql,(pageNo-1)*pageSize,pageSize)
+	var books []*model.Book
+	for rows.Next() {
+		book := &model.Book{}
+		errScan := rows.Scan(&book.ID,&book.Title,&book.Author,&book.Price,&book.Sales,&book.Stock,&book.ImgPath)
+		if errScan != nil {
+			continue
+		}
+		books = append(books,book)
+	}
+
+	//创建分页记录返回
+	pageInfo := model.Page{
+		Books:       books,
+		PageNo:      pageNo,
+		PageSize:    pageSize,
+		PageTotal:   pageTotal,
+		RecordTotal: recordTotal,
+	}
+	return pageInfo,nil
+}
+
 //查询某本图书
 func GetBookByID(bookID int) (*model.Book,error){
 	sqlStr := "select id,title,author,price,sales,stock,img_path from books where id = ?"
