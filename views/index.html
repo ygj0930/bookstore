@@ -29,22 +29,22 @@
 	<div id="header">
 			<img class="logo_img" alt="" src="/static/img/logo.gif" >
 			<span class="wel_word">网上书城</span>
-{{/*			{{if .IsLogin}}*/}}
-{{/*			<div>*/}}
-{{/*				<span>欢迎<span class="um_span">{{.Username}}</span>光临尚硅谷书城</span>*/}}
-{{/*				<a href="/getCartInfo">购物车</a>*/}}
-{{/*				<a href="/getMyOrder">我的订单</a>*/}}
-{{/*				<a href="/logout">注销</a>*/}}
-{{/*				<a href="/main">返回主页</a>*/}}
-{{/*				<a href="/pages/manager/manager.html">后台管理</a>*/}}
-{{/*			</div>*/}}
-{{/*			{{else}}*/}}
+			{{if .IsLogin}}
 			<div>
-				<a href="/toLogin">登录</a> |
-				<a href="/pages/user/regist.html">注册</a> &nbsp;&nbsp;
+				<span>欢迎<span class="um_span">{{.UserName}}</span>光临尚硅谷书城</span>
+				<a href="/getCartInfo">购物车</a>
+				<a href="/getMyOrder">我的订单</a>
+				<a href="/logout">注销</a>
+				<a href="/main">返回主页</a>
 				<a href="/pages/manager/manager.html">后台管理</a>
 			</div>
-{{/*			{{end}}*/}}
+			{{else}}
+			<div>
+				<a href="/toLogin">登录</a> |
+				<a href="/pages/user/regist.html">注册</a>  |
+				<a href="/pages/manager/manager.html">后台管理</a>
+			</div>
+			{{end}}
 	</div>
 	
 	<div id="main">

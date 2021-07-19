@@ -9,6 +9,8 @@ type Page struct {
 	RecordTotal int64//总记录数
 	MinPrice string
 	MaxPrice string
+	IsLogin bool
+	UserName string
 }
 
 //跳转边界判断

@@ -2,6 +2,8 @@ package controller
 
 import (
 	"bookstore/dao"
+	"bookstore/model"
+	"bookstore/utils"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -19,8 +21,26 @@ func DoLogin(w http.ResponseWriter,r *http.Request){
 		fmt.Println("DoLogin error:",err)
 	}
 	if user != nil {
+		//创建session
+		sessionId := utils.CreateUUID()
+		session := &model.Session{
+			SessionId: sessionId,
+			UserName:  username,
+			UserId:    user.ID,
+		}
+		//保存
+		_ = dao.AddSession(session)
+
+		//设置cookie，回传给浏览器
+		cookie := &http.Cookie{
+			Name:     "sessionId",
+			Value:    sessionId,
+			HttpOnly: true,
+		}
+		http.SetCookie(w,cookie)
+
 		t := template.Must(template.ParseFiles("views/pages/user/login_success.html"))
-		t.Execute(w,username)
+		t.Execute(w,session)
 	}else{
 		t := template.Must(template.ParseFiles("views/pages/user/login.html"))
 		t.Execute(w,"登录失败，请检查输入的用户名和密码。")

@@ -29,7 +29,14 @@ func PageBooksManagerPageHandler(w http.ResponseWriter,r *http.Request){
 	}
 	//获取数据
 	page,_ := dao.GetPageBooks(pageNo)
-
+	//获取会话信息
+	session,err := dao.GetSessionByCookie(r)
+	if err != nil {
+		fmt.Println("session not exit！")
+	}else{
+		page.IsLogin = true
+		page.UserName = session.UserName
+	}
 	//渲染模板
 	t := template.Must(template.ParseFiles("views/pages/manager/book_manager.html"))
 

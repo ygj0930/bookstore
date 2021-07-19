@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>书城首页</title>
-    <link type="text/css" rel="stylesheet" href="/static/css/style.css" >
+    <link type="text/css" rel="stylesheet" href="/static/css/style.css">
     <script src="/static/script/jquery-1.7.2.js"></script>
     <script>
-        $(function (){
+        $(function () {
             //绑定单击事件
-            $(".AddBook2Cart").click(function (){
+            $(".AddBook2Cart").click(function () {
                 var bookId = $(this).attr("id");
                 var url = "/AddBook2Cart"
-                var param = {"bookId":bookId}
-                $.post(url,param,function (res){
-                    if (res == "请先进行登录再操作！"){
-                        alert(res+"点击确定进行登录。");
+                var param = {"bookId": bookId}
+                $.post(url, param, function (res) {
+                    if (res == "请先进行登录再操作！") {
+                        alert(res + "点击确定进行登录。");
                         window.location.replace("/toLogin");
-                    }else {
+                    } else {
                         $("#bookMsg").text(res);
                     }
                 });
@@ -27,24 +27,24 @@
 <body>
 
 <div id="header">
-    <img class="logo_img" alt="" src="/static/img/logo.gif" >
+    <img class="logo_img" alt="" src="/static/img/logo.gif">
     <span class="wel_word">网上书城</span>
-{{/*    {{if .IsLogin}}*/}}
-{{/*        <div>*/}}
-{{/*            <span>欢迎<span class="um_span">{{.Username}}</span>光临尚硅谷书城</span>*/}}
-{{/*            <a href="/getCartInfo">购物车</a>*/}}
-{{/*            <a href="/getMyOrder">我的订单</a>*/}}
-{{/*            <a href="/logout">注销</a>*/}}
-{{/*            <a href="/main">返回主页</a>*/}}
-{{/*            <a href="/pages/manager/manager.html">后台管理</a>*/}}
-{{/*        </div>*/}}
-{{/*    {{else}}*/}}
-{{/*        <div>*/}}
-{{/*            <a href="/toLogin">登录</a> |*/}}
-{{/*            <a href="/pages/user/regist.html">注册</a> &nbsp;&nbsp;*/}}
-{{/*            <a href="/pages/manager/manager.html">后台管理</a>*/}}
-{{/*        </div>*/}}
-{{/*    {{end}}*/}}
+    {{if .IsLogin}}
+        <div>
+            <span>欢迎<span class="um_span">{{.UserName}}</span>光临尚硅谷书城</span>
+            <a href="/getCartInfo">购物车</a>
+            <a href="/getMyOrder">我的订单</a>
+            <a href="/logout">注销</a>
+            <a href="/main">返回主页</a>
+            <a href="/pages/manager/manager.html">后台管理</a>
+        </div>
+    {{else}}
+        <div>
+            <a href="/toLogin">登录</a> |
+            <a href="/pages/user/regist.html">注册</a> |
+            <a href="/pages/manager/manager.html">后台管理</a>
+        </div>
+    {{end}}
 </div>
 
 <div id="main">
@@ -53,7 +53,7 @@
             <form action="/getPageBooksByPrice" method="POST">
                 价格：
                 <input type="text" name="minPrice" value="{{.MinPrice}}"> 元 -
-                     <input type="text" name="maxPrice" value="{{.MaxPrice}}"> 元
+                <input type="text" name="maxPrice" value="{{.MaxPrice}}"> 元
                 <button>查询</button>
             </form>
         </div>
@@ -67,7 +67,7 @@
         {{range .Books}}
             <div class="b_list">
                 <div class="img_div">
-                    <img class="book_img" alt="" src="{{.ImgPath}}" />
+                    <img class="book_img" alt="" src="{{.ImgPath}}"/>
                 </div>
                 <div class="book_info">
                     <div class="book_name">
@@ -113,15 +113,15 @@
         <input type="button" value="确定" id="sub">
         <script>
             //给确定按钮绑定单击事件
-            $("#sub").click(function(){
+            $("#sub").click(function () {
                 //获取输入的页码
                 var pageNo = $("#pn_input").val();
                 var totalPages = $("#totalPages").text();
-                if (pageNo <= 0 || pageNo > totalPages){
+                if (pageNo <= 0 || pageNo > totalPages) {
                     alert("输入页码有误！");
                     return false;
-                }else {
-                    location = "/getPageBooksByPrice?PageNo=" + pageNo +"&minPrice={{.MinPrice}}&maxPrice={{.MaxPrice}}"
+                } else {
+                    location = "/getPageBooksByPrice?PageNo=" + pageNo + "&minPrice={{.MinPrice}}&maxPrice={{.MaxPrice}}"
                 }
             });
         </script>
