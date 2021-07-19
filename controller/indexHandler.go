@@ -21,7 +21,7 @@ func IndexHandler(w http.ResponseWriter,r *http.Request){
 
 	//获取会话信息
 	session,err := dao.GetSessionByCookie(r)
-	if err != nil {
+	if err != nil || session == nil{
 		fmt.Println("session not exit！")
 	}else{
 		page.IsLogin = true

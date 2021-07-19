@@ -15,9 +15,10 @@ func main() {
 	http.HandleFunc("/",controller.IndexHandler)
 	http.HandleFunc("/main",controller.IndexHandler)
 
-	//用户登录注册
+	//用户登录注册注销
 	http.HandleFunc("/toLogin",controller.LoginPageHandler)
 	http.HandleFunc("/toRegister",controller.RegisterPageHandler)
+	http.HandleFunc("/logout",controller.LogoutHandler)
 
 	//后台管理
 	http.HandleFunc("/toManager",controller.ManagerPageHandler)

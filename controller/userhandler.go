@@ -89,3 +89,30 @@ func DoFindUserByName(w http.ResponseWriter,r *http.Request){
 		w.Write([]byte("<font style='color:green'>恭喜,用户名可用</font>"))
 	}
 }
+
+//处理注销请求
+func LogoutHandler(w http.ResponseWriter,r *http.Request){
+	//获取要注销的会话
+	session,err := dao.GetSessionByCookie(r)
+	if err != nil{
+		fmt.Println("LogoutHandler error:",err)
+	}else{
+		//删除会话
+		errDel := dao.DeleteSession(session.SessionId)
+		if errDel != nil{
+			fmt.Println("LogoutHandler-DeleteSession error:",errDel)
+		}
+	}
+
+	//设置cookie失效
+	cookie,errCookie := r.Cookie("sessionId")
+	if errCookie != nil{
+		fmt.Println("LogoutHandler error:",errCookie)
+	}else{
+		cookie.MaxAge = -1
+		http.SetCookie(w,cookie)
+	}
+
+	//退出到首页
+	IndexHandler(w,r)
+}
