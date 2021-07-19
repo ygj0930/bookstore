@@ -18,11 +18,22 @@ func AddCartItem(cartItem *model.CartItem) error {
 	return nil
 }
 
-//删除购物项
+//删除具体购物项
 func DeleteCartItem(cartItemId string) error {
 	sqlStr := "delete from cart_items where id = ?"
 
 	_, errDel := utils.Db.Exec(sqlStr, cartItemId)
+	if errDel != nil {
+		return errDel
+	}
+	return nil
+}
+
+//删除购物车的购物项
+func DeleteCartItemsByCartId(cartId string) error {
+	sqlStr := "delete from cart_items where cart_id = ?"
+
+	_, errDel := utils.Db.Exec(sqlStr, cartId)
 	if errDel != nil {
 		return errDel
 	}

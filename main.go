@@ -46,6 +46,7 @@ func main() {
 
 	//购物车相关请求
 	http.HandleFunc("/AddBook2Cart", controller.DoAddBook2Cart)
+	http.HandleFunc("/deleteCart", controller.DoDeleteCart)
 
 	//服务器启动
 	http.ListenAndServe(":8080", nil)

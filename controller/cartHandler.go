@@ -18,6 +18,19 @@ func CartPageHandler(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, session)
 }
 
+func DoDeleteCart(w http.ResponseWriter, r *http.Request) {
+	cartId := r.FormValue("cartId")
+
+	//删除数据库购物车以及明细
+	dao.DeleteCart(cartId)
+
+	//删除会话中的购物车
+	session, _ := dao.GetSessionByCookie(r)
+	session.Cart = nil
+
+	//跳转回购物车页面
+	CartPageHandler(w, r)
+}
 func DoAddBook2Cart(w http.ResponseWriter, r *http.Request) {
 	res := "请先进行登录再操作！"
 	//判断是否登录
