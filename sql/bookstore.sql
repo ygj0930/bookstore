@@ -54,10 +54,10 @@ INSERT INTO `books` VALUES (40, 'Go语言学习笔记', '雨痕', 51, 100, 33, '
 INSERT INTO `books` VALUES (43, 'go语言基础', 'l1ng14', 30, 10, 111, 'nil');
 
 -- ----------------------------
--- Table structure for cart_itmes
+-- Table structure for cart_items
 -- ----------------------------
-DROP TABLE IF EXISTS `cart_itmes`;
-CREATE TABLE `cart_itmes`  (
+DROP TABLE IF EXISTS `cart_items`;
+CREATE TABLE `cart_items`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `COUNT` int(11) NOT NULL,
   `amount` double(11, 2) NOT NULL,
@@ -66,16 +66,16 @@ CREATE TABLE `cart_itmes`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `book_id`(`book_id`) USING BTREE,
   INDEX `cart_id`(`cart_id`) USING BTREE,
-  CONSTRAINT `cart_itmes_ibfk_1` FOREIGN KEY (`book_id`) REFERENCES `books` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `cart_itmes_ibfk_2` FOREIGN KEY (`cart_id`) REFERENCES `carts` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `cart_items_ibfk_1` FOREIGN KEY (`book_id`) REFERENCES `books` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `cart_items_ibfk_2` FOREIGN KEY (`cart_id`) REFERENCES `carts` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 77  ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of cart_itmes
+-- Records of cart_items
 -- ----------------------------
-INSERT INTO `cart_itmes` VALUES (51, 10, 440.00, 3, 'bd97dc0c-2265-4fb6-4951-f3978122a9a0');
-INSERT INTO `cart_itmes` VALUES (76, 1, 44.00, 3, '0090e801-f85d-4b5a-516b-02ebe9c9cfdb');
-INSERT INTO `cart_itmes` VALUES (77, 1, 31.00, 12, '0090e801-f85d-4b5a-516b-02ebe9c9cfdb');
+INSERT INTO `cart_items` VALUES (51, 10, 440.00, 3, 'bd97dc0c-2265-4fb6-4951-f3978122a9a0');
+INSERT INTO `cart_items` VALUES (76, 1, 44.00, 3, '0090e801-f85d-4b5a-516b-02ebe9c9cfdb');
+INSERT INTO `cart_items` VALUES (77, 1, 31.00, 12, '0090e801-f85d-4b5a-516b-02ebe9c9cfdb');
 
 -- ----------------------------
 -- Table structure for carts
