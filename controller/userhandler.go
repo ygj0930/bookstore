@@ -11,39 +11,47 @@ import (
 
 //处理登录请求
 func DoLogin(w http.ResponseWriter,r *http.Request){
-	//获取请求参数
-	username := r.PostFormValue("username")
-	password := r.PostFormValue("password")
+	//拦截重复登录
+	isLogin := dao.IsLogin(r)
 
-	//进行验证
-	user,err := dao.CheckUserNameAndPassword(username,password)
-	if err != nil {
-		fmt.Println("DoLogin error:",err)
-	}
-	if user != nil {
-		//创建session
-		sessionId := utils.CreateUUID()
-		session := &model.Session{
-			SessionId: sessionId,
-			UserName:  username,
-			UserId:    user.ID,
-		}
-		//保存
-		_ = dao.AddSession(session)
-
-		//设置cookie，回传给浏览器
-		cookie := &http.Cookie{
-			Name:     "sessionId",
-			Value:    sessionId,
-			HttpOnly: true,
-		}
-		http.SetCookie(w,cookie)
-
-		t := template.Must(template.ParseFiles("views/pages/user/login_success.html"))
-		t.Execute(w,session)
+	if isLogin {
+		//已登录，直接跳转到首页
+		IndexHandler(w,r)
 	}else{
-		t := template.Must(template.ParseFiles("views/pages/user/login.html"))
-		t.Execute(w,"登录失败，请检查输入的用户名和密码。")
+		//获取请求参数
+		username := r.PostFormValue("username")
+		password := r.PostFormValue("password")
+
+		//进行验证
+		user,err := dao.CheckUserNameAndPassword(username,password)
+		if err != nil {
+			fmt.Println("DoLogin error:",err)
+		}
+		if user != nil {
+			//创建session
+			sessionId := utils.CreateUUID()
+			session := &model.Session{
+				SessionId: sessionId,
+				UserName:  username,
+				UserId:    user.ID,
+			}
+			//保存
+			_ = dao.AddSession(session)
+
+			//设置cookie，回传给浏览器
+			cookie := &http.Cookie{
+				Name:     "sessionId",
+				Value:    sessionId,
+				HttpOnly: true,
+			}
+			http.SetCookie(w,cookie)
+
+			t := template.Must(template.ParseFiles("views/pages/user/login_success.html"))
+			t.Execute(w,session)
+		}else{
+			t := template.Must(template.ParseFiles("views/pages/user/login.html"))
+			t.Execute(w,"登录失败，请检查输入的用户名和密码。")
+		}
 	}
 }
 

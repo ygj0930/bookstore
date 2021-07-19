@@ -58,3 +58,13 @@ func GetSessionByCookie(r *http.Request)(*model.Session,error){
 	}
 	return session,nil
 }
+
+//判断是否登录
+func IsLogin(r *http.Request) bool {
+	session,err := GetSessionByCookie(r)
+
+	if err != nil || session == nil {
+		return false
+	}
+	return true
+}
