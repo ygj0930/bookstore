@@ -2,6 +2,7 @@ package model
 
 type Session struct {
 	SessionId string
-	UserName string
-	UserId int
+	UserName  string
+	UserId    int
+	Cart      *Cart
 }

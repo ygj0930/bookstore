@@ -51,7 +51,7 @@
 	<div id="header">
 			<img class="logo_img" alt="" src="/static/img/logo.gif" >
 			<span class="wel_word">购物车</span>
-			{{if .User_id}}
+			{{if .UserId}}
 			<div>
 				<span>欢迎<span class="um_span">{{.UserName}}</span>光临goBook书城</span>
 				<a href="/getCartInfo">刷新购物车</a>
@@ -62,9 +62,7 @@
 			{{else}}
 			<div>
 				<a href="/toLogin">登录</a> |
-				<a href="/pages/user/regist.html">注册</a> &nbsp;&nbsp;
-				<a href="/pages/manager/manager.html">后台管理</a>
-				<a href="/getOrders">订单管理</a>
+				<a href="/pages/user/regist.html">注册</a>
 			</div>
 			{{end}}
 	</div>
@@ -73,7 +71,7 @@
 		
 		{{if .Cart}}
 		<table>
-			<span id="cartId" hidden="hidden">{{.Cart.CartId}}</span>
+			<span id="cartId" hidden="hidden">{{.Cart.ID}}</span>
 			<tr>
 				<td>商品名称</td>
 				<td>数量</td>
@@ -81,7 +79,7 @@
 				<td>金额</td>
 				<td>操作</td>
 			</tr>
-		{{range .Cart.CartItems}}	
+		{{range .Cart.CartItems}}
 			<tr>
 				<td>{{.Book.Title}}</td>
 				<td>
@@ -89,7 +87,7 @@
 				</td>
 				<td>{{.Book.Price}}</td>
 				<td>{{.Amount}}</td>
-				<td><a id="{{.Book.Title}}" class="deleteCartItem" href="/deleteCartItem?cartItemId={{.CartItemId}}">删除</a></td>
+				<td><a id="{{.Book.Title}}" class="deleteCartItem" href="/deleteCartItem?cartItemId={{.ID}}">删除</a></td>
 			</tr>
 		{{end}}
 		</table>
@@ -98,7 +96,7 @@
 			<span class="cart_span">购物车中共有<span class="b_count" id="totalCount">{{.Cart.TotalCount}}</span>件商品</span>
 			<span class="cart_span">总金额<span class="b_price" id="totalAmount">{{.Cart.TotalAmount}}</span>元</span>
 			<span class="cart_span"><a href="/main">继续购物</a></span>
-			<span class="cart_span"><a href="/deleteCart?cartId={{.Cart.CartId}}" id="emptyCart">清空购物车</a></span>
+			<span class="cart_span"><a href="/deleteCart?cartId={{.Cart.ID}}" id="emptyCart">清空购物车</a></span>
 			<span class="cart_span"><a href="/checkout">去结账</a></span>
 		</div>
 		{{else}}

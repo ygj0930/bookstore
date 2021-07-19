@@ -9,91 +9,128 @@ import (
 )
 
 //首页请求处理：渲染并返回首页
-func IndexHandler(w http.ResponseWriter,r *http.Request){
+func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	//获取请求参数
 	pageNoStr := r.FormValue("PageNo")
-	pageNo,errParse := strconv.ParseInt(pageNoStr,10,64)
-	if pageNoStr == "" || errParse != nil{
+	pageNo, errParse := strconv.ParseInt(pageNoStr, 10, 64)
+	if pageNoStr == "" || errParse != nil {
 		pageNo = 1
 	}
 	//获取数据
-	page,_ := dao.GetPageBooks(pageNo)
+	page, _ := dao.GetPageBooks(pageNo)
 
 	//获取会话信息
-	session,err := dao.GetSessionByCookie(r)
-	if err != nil || session == nil{
+	session, err := dao.GetSessionByCookie(r)
+	if err != nil || session == nil {
 		fmt.Println("session not exit！")
-	}else{
+	} else {
 		page.IsLogin = true
 		page.UserName = session.UserName
+	}
+
+	if page.IsLogin {
+		cart, errCart := dao.GetCartBySessionId(session.SessionId)
+		//无车
+		if cart == nil || errCart != nil {
+			page.BookMsg = "您还没有添加商品到购物车~"
+		} else {
+			countStr := strconv.FormatInt(cart.GetTotalCount(), 10)
+			page.BookMsg = "您的购物车中已有 " + countStr + " 件商品"
+		}
+	} else {
+		page.BookMsg = "请先登录~"
 	}
 
 	//渲染模板
 	t := template.Must(template.ParseFiles("views/index.html"))
 
-	t.Execute(w,page)
+	t.Execute(w, page)
 }
 
 //首页价格查询请求处理：渲染并返回首页
-func PageBooksByPriceManagerPageHandler(w http.ResponseWriter,r *http.Request){
+func PageBooksByPriceManagerPageHandler(w http.ResponseWriter, r *http.Request) {
 	//获取请求参数
 	pageNoStr := r.FormValue("PageNo")
 	minPriceStr := r.FormValue("minPrice")
 	maxPriceStr := r.FormValue("maxPrice")
-	pageNo,errParse := strconv.ParseInt(pageNoStr,10,64)
-	if pageNoStr == "" || errParse != nil{
+	pageNo, errParse := strconv.ParseInt(pageNoStr, 10, 64)
+	if pageNoStr == "" || errParse != nil {
 		pageNo = 1
 	}
-	fmt.Println("pageNoStr:",pageNoStr,"minPriceStr:",minPriceStr,"maxPriceStr:",maxPriceStr)
-	if minPriceStr=="" && maxPriceStr==""{
+	fmt.Println("pageNoStr:", pageNoStr, "minPriceStr:", minPriceStr, "maxPriceStr:", maxPriceStr)
+	if minPriceStr == "" && maxPriceStr == "" {
 		//获取数据
-		page,_ := dao.GetPageBooks(pageNo)
+		page, _ := dao.GetPageBooks(pageNo)
 		//获取会话信息
-		session,err := dao.GetSessionByCookie(r)
+		session, err := dao.GetSessionByCookie(r)
 		if err != nil {
 			fmt.Println("session not exit！")
-		}else{
+		} else {
 			page.IsLogin = true
 			page.UserName = session.UserName
+		}
+
+		if page.IsLogin {
+			cart, errCart := dao.GetCartBySessionId(session.SessionId)
+			//无车
+			if cart == nil || errCart != nil {
+				page.BookMsg = "您还没有添加商品到购物车~"
+			} else {
+				countStr := strconv.FormatInt(cart.GetTotalCount(), 10)
+				page.BookMsg = "您的购物车中已有 " + countStr + " 件商品"
+			}
+		} else {
+			page.BookMsg = "请先登录~"
 		}
 
 		//渲染模板
 		t := template.Must(template.ParseFiles("views/index.html"))
 
-		t.Execute(w,page)
-	}else{
+		t.Execute(w, page)
+	} else {
 		//获取数据
-		page,_ := dao.GetPageBooksByPrice(pageNo,minPriceStr,maxPriceStr)
+		page, _ := dao.GetPageBooksByPrice(pageNo, minPriceStr, maxPriceStr)
 		//获取会话信息
-		session,err := dao.GetSessionByCookie(r)
+		session, err := dao.GetSessionByCookie(r)
 		if err != nil {
 			fmt.Println("session not exit！")
-		}else{
+		} else {
 			page.IsLogin = true
 			page.UserName = session.UserName
 		}
+
+		if page.IsLogin {
+			cart, errCart := dao.GetCartBySessionId(session.SessionId)
+			//无车
+			if cart == nil || errCart != nil {
+				page.BookMsg = "您还没有添加商品到购物车~"
+			} else {
+				countStr := strconv.FormatInt(cart.GetTotalCount(), 10)
+				page.BookMsg = "您的购物车中已有 " + countStr + " 件商品"
+			}
+		} else {
+			page.BookMsg = "请先登录~"
+		}
+
 		//渲染模板
 		t := template.Must(template.ParseFiles("views/searchOfPrice.html"))
 
-		t.Execute(w,page)
+		t.Execute(w, page)
 	}
 }
 
-
 //跳转登录页面
-func LoginPageHandler(w http.ResponseWriter,r *http.Request){
+func LoginPageHandler(w http.ResponseWriter, r *http.Request) {
 	//渲染模板
 	t := template.Must(template.ParseFiles("views/pages/user/login.html"))
 
-	t.Execute(w,"")
+	t.Execute(w, "")
 }
 
 //跳转注册页面
-func RegisterPageHandler(w http.ResponseWriter,r *http.Request){
+func RegisterPageHandler(w http.ResponseWriter, r *http.Request) {
 	//渲染模板
 	t := template.Must(template.ParseFiles("views/pages/user/regist.html"))
 
-	t.Execute(w,"")
+	t.Execute(w, "")
 }
-
-

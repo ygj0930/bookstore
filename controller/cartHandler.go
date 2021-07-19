@@ -4,9 +4,19 @@ import (
 	"bookstore/dao"
 	"bookstore/model"
 	"bookstore/utils"
+	"html/template"
 	"net/http"
 	"strconv"
 )
+
+func CartPageHandler(w http.ResponseWriter, r *http.Request) {
+	//查询当前用户的购物车
+	session, _ := dao.GetSessionByCookie(r)
+	cart, _ := dao.GetCartBySessionId(session.SessionId)
+	session.Cart = cart
+	t := template.Must(template.ParseFiles("views/pages/cart/cart.html"))
+	t.Execute(w, session)
+}
 
 func DoAddBook2Cart(w http.ResponseWriter, r *http.Request) {
 	res := "请先进行登录再操作！"

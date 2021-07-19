@@ -30,6 +30,9 @@ func main() {
 	http.HandleFunc("/toAddBook", controller.BookAddPageHandler)
 	http.HandleFunc("/toUpdateBookPage", controller.BookUpdatePageHandler)
 
+	//购物车页面
+	http.HandleFunc("/getCartInfo", controller.CartPageHandler)
+
 	//处理请求
 	//登录注册相关请求
 	http.HandleFunc("/login", controller.DoLogin)
