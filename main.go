@@ -50,6 +50,9 @@ func main() {
 	http.HandleFunc("/deleteCartItem", controller.DoDeleteCartItem)
 	http.HandleFunc("/updateCartItem", controller.DoUpdateCartItem)
 
+	//订单相关
+	http.HandleFunc("/checkout", controller.DoCheckout)
+
 	//服务器启动
 	http.ListenAndServe(":8080", nil)
 }

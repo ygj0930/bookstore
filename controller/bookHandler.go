@@ -10,38 +10,38 @@ import (
 )
 
 //跳转后台管理页面
-func ManagerPageHandler(w http.ResponseWriter,r *http.Request){
+func ManagerPageHandler(w http.ResponseWriter, r *http.Request) {
 	//渲染模板
 	t := template.Must(template.ParseFiles("views/pages/manager/manager.html"))
 
-	t.Execute(w,"")
+	t.Execute(w, "")
 }
 
 //跳转图书管理页面
-func BooksManagerPageHandler(w http.ResponseWriter,r *http.Request){
+func BooksManagerPageHandler(w http.ResponseWriter, r *http.Request) {
 	//获取数据
-	Books,_ := dao.GetBooks()
+	Books, _ := dao.GetBooks()
 
 	//渲染模板
 	t := template.Must(template.ParseFiles("views/pages/manager/book_manager.html"))
-	t.Execute(w,Books)
+	t.Execute(w, Books)
 }
 
 //跳转图书管理页面：分页查询
-func PageBooksManagerPageHandler(w http.ResponseWriter,r *http.Request){
+func PageBooksManagerPageHandler(w http.ResponseWriter, r *http.Request) {
 	//获取请求参数
 	pageNoStr := r.FormValue("PageNo")
-	pageNo,errParse := strconv.ParseInt(pageNoStr,10,64)
-	if pageNoStr == "" || errParse != nil{
+	pageNo, errParse := strconv.ParseInt(pageNoStr, 10, 64)
+	if pageNoStr == "" || errParse != nil {
 		pageNo = 1
 	}
 	//获取数据
-	page,_ := dao.GetPageBooks(pageNo)
+	page, _ := dao.GetPageBooks(pageNo)
 	//获取会话信息
-	session,err := dao.GetSessionByCookie(r)
+	session, err := dao.GetSessionByCookie(r)
 	if err != nil {
 		fmt.Println("session not exit！")
-	}else{
+	} else {
 		page.IsLogin = true
 		page.UserName = session.UserName
 	}
@@ -49,18 +49,18 @@ func PageBooksManagerPageHandler(w http.ResponseWriter,r *http.Request){
 	t := template.Must(template.ParseFiles("views/pages/manager/book_manager.html"))
 
 	//易错点：由于需要在template中调用方法，因此要传递指针类型
-	t.Execute(w,page)
+	t.Execute(w, page)
 }
-
 
 //跳转添加图书页面
-func BookAddPageHandler(w http.ResponseWriter,r *http.Request){
+func BookAddPageHandler(w http.ResponseWriter, r *http.Request) {
 	//渲染模板
 	t := template.Must(template.ParseFiles("views/pages/manager/book_add.html"))
-	t.Execute(w,"")
+	t.Execute(w, "")
 }
+
 //新增图书
-func DoAddBook(w http.ResponseWriter,r *http.Request){
+func DoAddBook(w http.ResponseWriter, r *http.Request) {
 	//获取参数
 	title := r.PostFormValue("title")
 	price := r.PostFormValue("price")
@@ -70,9 +70,9 @@ func DoAddBook(w http.ResponseWriter,r *http.Request){
 	img_path := r.PostFormValue("img_path")
 
 	//类型转换
-	fPrice,_ := strconv.ParseFloat(price,2)
-	iSales,_ := strconv.Atoi(sales)
-	iStock,_ := strconv.Atoi(stock)
+	fPrice, _ := strconv.ParseFloat(price, 2)
+	iSales, _ := strconv.Atoi(sales)
+	iStock, _ := strconv.Atoi(stock)
 	//进行插入
 	errIns := dao.AddBook(&model.Book{
 		Title:   title,
@@ -83,47 +83,48 @@ func DoAddBook(w http.ResponseWriter,r *http.Request){
 		ImgPath: img_path,
 	})
 	if errIns != nil {
-		fmt.Println("DoAddBook error:",errIns)
+		fmt.Println("DoAddBook error:", errIns)
 	}
 
 	//内部跳转到图书管理页面
-	BooksManagerPageHandler(w,r)
+	PageBooksManagerPageHandler(w, r)
 }
 
 //删除图书
-func DoDeleteBook(w http.ResponseWriter,r *http.Request){
+func DoDeleteBook(w http.ResponseWriter, r *http.Request) {
 	//获取参数
 	idStr := r.FormValue("bookId")
-	bookId,_ := strconv.Atoi(idStr)
+	bookId, _ := strconv.Atoi(idStr)
 
 	//进行删除
 	err := dao.DeleteBook(bookId)
-	if err!=nil {
-		fmt.Println("DoDeleteBook error:",err)
+	if err != nil {
+		fmt.Println("DoDeleteBook error:", err)
 	}
 
 	//内部跳转回图书管理页面
-	BooksManagerPageHandler(w,r)
+	PageBooksManagerPageHandler(w, r)
 }
 
 //跳转修改图书页面
-func BookUpdatePageHandler(w http.ResponseWriter,r *http.Request){
+func BookUpdatePageHandler(w http.ResponseWriter, r *http.Request) {
 	//获取参数
 	idStr := r.FormValue("bookId")
-	bookId,_ := strconv.Atoi(idStr)
+	bookId, _ := strconv.Atoi(idStr)
 
 	//查询书籍信息
-	book,err := dao.GetBookByID(bookId)
-	if err!=nil {
-		fmt.Println("GetBookByID error:",err)
+	book, err := dao.GetBookByID(bookId)
+	if err != nil {
+		fmt.Println("GetBookByID error:", err)
 	}
 
 	//渲染模板
 	t := template.Must(template.ParseFiles("views/pages/manager/book_edit.html"))
-	t.Execute(w,book)
+	t.Execute(w, book)
 }
+
 //修改图书
-func DoUpdateBook(w http.ResponseWriter,r *http.Request){
+func DoUpdateBook(w http.ResponseWriter, r *http.Request) {
 	//获取参数
 	idStr := r.PostFormValue("bookId")
 	title := r.PostFormValue("title")
@@ -134,13 +135,13 @@ func DoUpdateBook(w http.ResponseWriter,r *http.Request){
 	img_path := r.PostFormValue("img_path")
 
 	//类型转换
-	iId,_ := strconv.Atoi(idStr)
-	fPrice,_ := strconv.ParseFloat(price,2)
-	iSales,_ := strconv.Atoi(sales)
-	iStock,_ := strconv.Atoi(stock)
+	iId, _ := strconv.Atoi(idStr)
+	fPrice, _ := strconv.ParseFloat(price, 2)
+	iSales, _ := strconv.Atoi(sales)
+	iStock, _ := strconv.Atoi(stock)
 	//进行插入
 	errIns := dao.UpdateBook(&model.Book{
-		ID:   iId,
+		ID:      iId,
 		Title:   title,
 		Author:  author,
 		Price:   fPrice,
@@ -149,9 +150,9 @@ func DoUpdateBook(w http.ResponseWriter,r *http.Request){
 		ImgPath: img_path,
 	})
 	if errIns != nil {
-		fmt.Println("DoUpdateBook error:",errIns)
+		fmt.Println("DoUpdateBook error:", errIns)
 	}
 
 	//内部跳转到图书管理页面
-	BooksManagerPageHandler(w,r)
+	PageBooksManagerPageHandler(w, r)
 }

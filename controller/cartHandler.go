@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 //查看购物车
@@ -179,4 +180,57 @@ func DoAddBook2Cart(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Write([]byte(res))
+}
+
+//结账：将当前会话中的购物车转化为订单，并清空购物车信息[数据库层面、内存层面]
+func DoCheckout(w http.ResponseWriter, r *http.Request) {
+	//获取本次会话中的购物车
+	session, _ := dao.GetSessionByCookie(r)
+	cart, _ := dao.GetCartBySessionId(session.SessionId)
+
+	//===拼接订单===
+	//创建订单ID
+	orderId := utils.CreateUUID()
+	//创建订单项
+	var orderItems []*model.OrderItem
+	for _, ct := range cart.CartItems {
+		book := ct.Book
+
+		orderItem := &model.OrderItem{
+			Count:   ct.Count,
+			Amount:  ct.Amount,
+			Title:   book.Title,
+			Author:  book.Author,
+			Price:   book.Price,
+			ImgPath: book.ImgPath,
+			OrderID: orderId,
+		}
+		orderItems = append(orderItems, orderItem)
+		//更新图书库存和销量
+		book.Sales = int(int64(book.Sales) + ct.Count)
+		book.Stock = int(int64(book.Stock) - ct.Count)
+		dao.UpdateBook(book)
+	}
+	//创建订单
+	order := &model.Order{
+		OrderID:     orderId,
+		CreateTime:  time.Now().Format("2006-01-02 15:04:05"),
+		TotalCount:  cart.TotalCount,
+		TotalAmount: cart.TotalAmount,
+		State:       0,
+		UserID:      session.UserId,
+		OrderItems:  orderItems,
+	}
+	//插入数据库
+	dao.AddOrder(order)
+
+	//删除购物车
+	dao.DeleteCart(cart.ID)
+	session.Cart = nil
+
+	//跳转结算页面
+	//渲染模板
+	t := template.Must(template.ParseFiles("views/pages/cart/checkout.html"))
+	session.OrderId = orderId
+	t.Execute(w, session)
 }
