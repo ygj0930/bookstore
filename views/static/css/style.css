@@ -1,7 +1,7 @@
 @CHARSET "UTF-8";
 
 body {
-	overflow: hidden;
+	overflow: scroll;
 }
 
 * {
@@ -27,6 +27,7 @@ div{
 	width: 1200px;
 	border: 1px black solid;
 	overflow-y: auto;
+	overflow-x: auto;
 }
 
 .clearfix:after {
@@ -35,9 +36,7 @@ div{
 	clear: both;
 	height: 0;
 }
-.clearfix{
-	zoom:1;
-}
+
 #bottom {
 	height: 30px;
 	width: 1200px;
