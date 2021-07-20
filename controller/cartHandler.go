@@ -9,6 +9,7 @@ import (
 	"strconv"
 )
 
+//查看购物车
 func CartPageHandler(w http.ResponseWriter, r *http.Request) {
 	//查询当前用户的购物车
 	session, _ := dao.GetSessionByCookie(r)
@@ -18,6 +19,7 @@ func CartPageHandler(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, session)
 }
 
+//清空购物车
 func DoDeleteCart(w http.ResponseWriter, r *http.Request) {
 	cartId := r.FormValue("cartId")
 
@@ -31,6 +33,36 @@ func DoDeleteCart(w http.ResponseWriter, r *http.Request) {
 	//跳转回购物车页面
 	CartPageHandler(w, r)
 }
+
+//删除购物项
+func DoDeleteCartItem(w http.ResponseWriter, r *http.Request) {
+	cartItemId := r.FormValue("cartItemId")
+	iCartItemID, _ := strconv.ParseInt(cartItemId, 10, 64)
+	//删除数据库中购物项
+	dao.DeleteCartItem(cartItemId)
+
+	//更新购物车
+	session, _ := dao.GetSessionByCookie(r)
+	cart, _ := dao.GetCartBySessionId(session.SessionId)
+	if cart != nil {
+		cartItems := cart.CartItems
+		for index, item := range cartItems {
+			//寻找要删除的购物项
+			if item.ID == iCartItemID {
+				//进行删除：从切片里剔除
+				newCartItems := append(cartItems[:index], cartItems[index+1:]...)
+				//更新购物车购物项
+				cart.CartItems = newCartItems
+			}
+		}
+	}
+	dao.UpdateCart(cart)
+
+	//跳转回购物车页面
+	CartPageHandler(w, r)
+}
+
+//加入购物车
 func DoAddBook2Cart(w http.ResponseWriter, r *http.Request) {
 	res := "请先进行登录再操作！"
 	//判断是否登录

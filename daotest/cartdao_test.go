@@ -14,6 +14,13 @@ func TestDeleteCart(t *testing.T) {
 	}
 }
 
+func TestDeleteCartItem(t *testing.T) {
+	err := dao.DeleteCartItem("94")
+	if err != nil {
+		t.Log(err)
+	}
+}
+
 func TestGetCartItemsByCartID(t *testing.T) {
 	res, _ := dao.GetCartItemsByCartID("0ab18110-d15f-4458-5027-bb03840f16cd")
 	for _, v := range res {
