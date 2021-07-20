@@ -127,17 +127,20 @@ func DoAddBook2Cart(w http.ResponseWriter, r *http.Request) {
 				Amount: book.Price,
 				CartId: cartId,
 			}
-			cartItems = append(cartItems, cartItem)
-
-			cart = &model.Cart{
-				ID:        cartId,
-				CartItems: cartItems,
-				UserID:    userId,
-				SessionID: session.SessionId,
-			}
-			cartAddErr := dao.AddCart(cart)
-			if cartAddErr != nil {
-				res = "创建购物车失败！"
+			if cartItem.Count > int64(cartItem.Book.Stock) {
+				res = "库存不足!"
+			} else {
+				cartItems = append(cartItems, cartItem)
+				cart = &model.Cart{
+					ID:        cartId,
+					CartItems: cartItems,
+					UserID:    userId,
+					SessionID: session.SessionId,
+				}
+				cartAddErr := dao.AddCart(cart)
+				if cartAddErr != nil {
+					res = "创建购物车失败！"
+				}
 			}
 		} else { //有车
 
@@ -149,34 +152,43 @@ func DoAddBook2Cart(w http.ResponseWriter, r *http.Request) {
 					Count:  1,
 					CartId: cart.ID,
 				}
-				//往数据库插入购物项
-				dao.AddCartItem(cartItem)
+				if cartItem.Count > int64(cartItem.Book.Stock) {
+					res = "库存不足!"
+				} else {
+					//往数据库插入购物项
+					dao.AddCartItem(cartItem)
 
-				//往内存中购物车增加购物项
-				cart.CartItems = append(cart.CartItems, cartItem)
-
+					//往内存中购物车增加购物项
+					cart.CartItems = append(cart.CartItems, cartItem)
+				}
 			} else { //有购物项，则增加数量
 				newCount := cartItem.Count + 1
-				newAmount := cartItem.GetAmount()
+				if newCount > int64(cartItem.Book.Stock) {
+					res = "库存不足!"
+				} else {
+					newAmount := cartItem.GetAmount()
 
-				//修改数据库中对应购物项的数量和金额
-				cartItem.Count = newCount
-				cartItem.Amount = newAmount
-				dao.UpdateCartItem(cartItem)
+					//修改数据库中对应购物项的数量和金额
+					cartItem.Count = newCount
+					cartItem.Amount = newAmount
+					dao.UpdateCartItem(cartItem)
 
-				//修改内存中购物车对应购物项的数量和金额
-				for _, v := range cart.CartItems {
-					if v.ID == cartItem.ID {
-						v.Count = newCount
-						v.Amount = newAmount
+					//修改内存中购物车对应购物项的数量和金额
+					for _, v := range cart.CartItems {
+						if v.ID == cartItem.ID {
+							v.Count = newCount
+							v.Amount = newAmount
+						}
 					}
 				}
 			}
 			//更新购物车的总金额总数量
 			dao.UpdateCart(cart)
 		}
-		countStr := strconv.FormatInt(cart.GetTotalCount(), 10)
-		res = "您刚刚购买了《" + book.Title + "》,购物车中已有 " + countStr + " 本图书"
+		if res != "库存不足!" {
+			countStr := strconv.FormatInt(cart.GetTotalCount(), 10)
+			res = "您刚刚购买了《" + book.Title + "》,购物车中已有 " + countStr + " 本图书"
+		}
 	}
 
 	w.Write([]byte(res))

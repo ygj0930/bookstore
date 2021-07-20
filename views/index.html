@@ -16,6 +16,8 @@
 					if (res == "请先进行登录再操作！"){
 						alert(res+"点击确定进行登录。");
 						window.location.replace("/toLogin");
+					}else if (res == "库存不足!"){
+						alert(res+"请购买其他书籍。");
 					}else {
 						$("#bookMsg").text(res);
 					}
