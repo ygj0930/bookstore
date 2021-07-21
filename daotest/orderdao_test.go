@@ -45,3 +45,10 @@ func TestAddOrder(t *testing.T) {
 		t.Log(err)
 	}
 }
+
+func TestGetOrders(t *testing.T) {
+	orders, _ := dao.GetOrders()
+	for _, v := range orders {
+		t.Logf("GetOrders:%+v", v)
+	}
+}
