@@ -53,6 +53,7 @@ func main() {
 	//订单相关
 	http.HandleFunc("/checkout", controller.DoCheckout)
 	http.HandleFunc("/getOrders", controller.DoGetOrders)
+	http.HandleFunc("/getOrderInfo", controller.DoGetOrderInfo)
 
 	//服务器启动
 	http.ListenAndServe(":8080", nil)
