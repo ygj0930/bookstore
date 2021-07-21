@@ -25,6 +25,7 @@
 	</div>
 	
 	<div id="main">
+		{{if .Orders}}
 		<table>
 			<tr>
 				<th>单号</th>
@@ -59,6 +60,10 @@
 			</tr>
 		{{end}}		
 		</table>
+		{{else}}
+			<br/><br/><br/><br/><br/><br/><br/><br/><br/>
+			<h1 style="text-align: center">您还没有下过单，快去<a href="/main" style="color:red">购物</a>吧！</h1>
+		{{end}}
 	</div>
 	
 	<div id="bottom">

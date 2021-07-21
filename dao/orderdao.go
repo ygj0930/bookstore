@@ -48,3 +48,30 @@ func GetOrders() ([]*model.Order, error) {
 
 	return orders, nil
 }
+
+//订单管理：获取我的全部订单
+func GetMyOrder(userId int) ([]*model.Order, error) {
+	sqlStr := "select * from orders where user_id = ?"
+	orderRows, errRows := utils.Db.Query(sqlStr, userId)
+	if errRows != nil {
+		return nil, errRows
+	}
+
+	var orders []*model.Order
+	for orderRows.Next() {
+		order := &model.Order{}
+		errScan := orderRows.Scan(&order.OrderID, &order.CreateTime, &order.TotalCount, &order.TotalAmount, &order.State, &order.UserID)
+		if errScan != nil {
+			return nil, errScan
+		}
+		orderItems, errItems := GetOrderItemsByOrderID(order.OrderID)
+		if errItems != nil {
+			return nil, errItems
+		}
+		order.OrderItems = orderItems
+
+		orders = append(orders, order)
+	}
+
+	return orders, nil
+}

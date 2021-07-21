@@ -52,3 +52,10 @@ func TestGetOrders(t *testing.T) {
 		t.Logf("GetOrders:%+v", v)
 	}
 }
+
+func TestGetMyOrder(t *testing.T) {
+	orders, _ := dao.GetMyOrder(20)
+	for _, v := range orders {
+		t.Logf("MyOrder:%+v", v)
+	}
+}

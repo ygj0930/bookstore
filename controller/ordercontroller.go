@@ -34,3 +34,20 @@ func DoGetOrderInfo(w http.ResponseWriter, r *http.Request) {
 	t := template.Must(template.ParseFiles("views/pages/order/order_info.html"))
 	t.Execute(w, items)
 }
+
+//我的订单页面
+func DoGetMyOrder(w http.ResponseWriter, r *http.Request) {
+	session, _ := dao.GetSessionByCookie(r)
+	userId := session.UserId
+
+	//获取我的订单
+	orders, err := dao.GetMyOrder(userId)
+	if err != nil {
+		panic(err)
+	}
+
+	session.Orders = orders
+	//渲染模板
+	t := template.Must(template.ParseFiles("views/pages/order/order.html"))
+	t.Execute(w, session)
+}
