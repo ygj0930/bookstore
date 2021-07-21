@@ -5,6 +5,16 @@ import (
 	"bookstore/utils"
 )
 
+//修改订单状态
+func TakeOrder(orderId string, state int) error {
+	sqlStr := "update orders set state=? where id=?"
+	_, errUpt := utils.Db.Exec(sqlStr, state, orderId)
+	if errUpt != nil {
+		return errUpt
+	}
+	return nil
+}
+
 //新增订单
 func AddOrder(order *model.Order) error {
 	//保存表头

@@ -55,6 +55,8 @@ func main() {
 	http.HandleFunc("/getOrders", controller.DoGetOrders)
 	http.HandleFunc("/getOrderInfo", controller.DoGetOrderInfo)
 	http.HandleFunc("/getMyOrder", controller.DoGetMyOrder)
+	http.HandleFunc("/takeOrder", controller.DoTakeOrder)
+	http.HandleFunc("/sendOrder", controller.DoSendOrder)
 
 	//服务器启动
 	http.ListenAndServe(":8080", nil)

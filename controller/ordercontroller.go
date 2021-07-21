@@ -4,6 +4,7 @@ import (
 	"bookstore/dao"
 	"html/template"
 	"net/http"
+	"strconv"
 )
 
 //订单管理页面
@@ -17,6 +18,21 @@ func DoGetOrders(w http.ResponseWriter, r *http.Request) {
 	//渲染模板
 	t := template.Must(template.ParseFiles("views/pages/order/order_manager.html"))
 	t.Execute(w, orders)
+}
+
+//发货
+func DoSendOrder(w http.ResponseWriter, r *http.Request) {
+	//提取参数
+	orderId := r.FormValue("orderId")
+
+	//修改数据库中订单状态
+	err := dao.TakeOrder(orderId, 1)
+	if err != nil {
+		panic(err)
+	}
+
+	//刷新订单管理页面
+	DoGetOrders(w, r)
 }
 
 //订单详情页面
@@ -50,4 +66,21 @@ func DoGetMyOrder(w http.ResponseWriter, r *http.Request) {
 	//渲染模板
 	t := template.Must(template.ParseFiles("views/pages/order/order.html"))
 	t.Execute(w, session)
+}
+
+//确认收货/退款退货
+func DoTakeOrder(w http.ResponseWriter, r *http.Request) {
+	//提取参数
+	orderId := r.FormValue("orderId")
+	state := r.FormValue("state")
+	iState, _ := strconv.Atoi(state)
+
+	//修改数据库中订单状态
+	err := dao.TakeOrder(orderId, iState)
+	if err != nil {
+		panic(err)
+	}
+
+	//刷新我的订单页面
+	DoGetMyOrder(w, r)
 }

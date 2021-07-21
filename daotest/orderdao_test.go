@@ -59,3 +59,10 @@ func TestGetMyOrder(t *testing.T) {
 		t.Logf("MyOrder:%+v", v)
 	}
 }
+
+func TestTakeOrder(t *testing.T) {
+	err := dao.TakeOrder("008a6688-3fed-4a0b-7c67-6ac76f181db8", 2)
+	if err != nil {
+		t.Log(err)
+	}
+}
