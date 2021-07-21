@@ -4,6 +4,7 @@ import (
 	"bookstore/dao"
 	"bookstore/model"
 	"bookstore/utils"
+	"encoding/json"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -63,8 +64,8 @@ func DoDeleteCartItem(w http.ResponseWriter, r *http.Request) {
 	CartPageHandler(w, r)
 }
 
-//修改购物项
-func DoUpdateCartItem(w http.ResponseWriter, r *http.Request) {
+//修改购物项，然后跳回购物车页面
+func DoUpdateCartItemByGET(w http.ResponseWriter, r *http.Request) {
 	cartId := r.FormValue("cartId")
 	bookId := r.FormValue("bookId")
 	bookCount := r.FormValue("bookCount")
@@ -96,6 +97,47 @@ func DoUpdateCartItem(w http.ResponseWriter, r *http.Request) {
 
 	//跳转回购物车页面
 	CartPageHandler(w, r)
+}
+
+//异步请求修改购物项，仅返回修改后小计信息
+func DoUpdateCartItemByAJAX(w http.ResponseWriter, r *http.Request) {
+	cartId := r.PostFormValue("cartId")
+	bookId := r.PostFormValue("bookId")
+	bookCount := r.PostFormValue("bookCount")
+	iBookCount, _ := strconv.ParseInt(bookCount, 10, 64)
+
+	//从数据库查询购物项
+	cartItem, _ := dao.GetCartItemByCartIDAndBookID(cartId, bookId)
+	//修改购物项数量
+	cartItem.Count = iBookCount
+	cartItem.Amount = cartItem.GetAmount()
+
+	//更新数据库购物项
+	dao.UpdateCartItem(cartItem)
+
+	//更新购物车
+	session, _ := dao.GetSessionByCookie(r)
+	cart, _ := dao.GetCartBySessionId(session.SessionId)
+	if cart != nil {
+		cartItems := cart.CartItems
+		for _, item := range cartItems {
+			//寻找要更新的购物项
+			if item.ID == cartItem.ID {
+				item.Count = iBookCount
+				item.Amount = item.GetAmount()
+			}
+		}
+	}
+	dao.UpdateCart(cart)
+
+	//返回修改后的信息
+	orderItemVo := &model.OrderItemVO{
+		TotalCount:  cart.GetTotalCount(),
+		TotalAmount: cart.GetTotalAmount(),
+		Amount:      cartItem.GetAmount(),
+	}
+	res, _ := json.Marshal(orderItemVo)
+	w.Write(res)
 }
 
 //加入购物车

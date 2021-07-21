@@ -48,7 +48,8 @@ func main() {
 	http.HandleFunc("/AddBook2Cart", controller.DoAddBook2Cart)
 	http.HandleFunc("/deleteCart", controller.DoDeleteCart)
 	http.HandleFunc("/deleteCartItem", controller.DoDeleteCartItem)
-	http.HandleFunc("/updateCartItem", controller.DoUpdateCartItem)
+	http.HandleFunc("/updateCartItemByGet", controller.DoUpdateCartItemByGET)
+	http.HandleFunc("/updateCartItemByAjax", controller.DoUpdateCartItemByAJAX)
 
 	//订单相关
 	http.HandleFunc("/checkout", controller.DoCheckout)

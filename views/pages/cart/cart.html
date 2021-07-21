@@ -26,23 +26,23 @@
 
 			var cartId = $("#cartId").text();
 			//======发送同步请求======
-			location = "/updateCartItem?bookId="+bookId+"&bookCount="+bookCount+"&cartId="+cartId;
+			// location = "/updateCartItemByGet?bookId="+bookId+"&bookCount="+bookCount+"&cartId="+cartId;
 
 			//======发送Ajax请求======
 			//设置请求的url
-			// var url = "/updateCartItem";
-			// //设置请求参数
-			// var params = {"bookId":bookId,"bookCount":bookCount,"cartId":cartId};
-			// //获取显示购物项中的金额小计的td元素
-			// var $tdEle = $(this).parent().next().next();
-			// $.post(url,params,function(res){
-			// 	//设置总数量
-			// 	$("#totalCount").text(res.TotalCount);
-			// 	//设置总金额
-			// 	$("#totalAmount").text(res.TotalAmount);
-			// 	//设置金额小计
-			// 	$tdEle.text(res.Amount);
-			// },"json");
+			var url = "/updateCartItemByAjax";
+			//设置请求参数
+			var params = {"bookId":bookId,"bookCount":bookCount,"cartId":cartId};
+			//获取显示购物项中的金额小计的td元素
+			var $tdEle = $(this).parent().next().next();
+			$.post(url,params,function(res){
+				//设置总数量
+				$("#totalCount").text(res.TotalCount);
+				//设置总金额
+				$("#totalAmount").text(res.TotalAmount);
+				//设置金额小计
+				$tdEle.text(res.Amount);
+			},"json");
 		});
 	});
 </script>
